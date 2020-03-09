@@ -1,0 +1,213 @@
+-------------------------------------------------------------------------------------------------
+
+					SPRING DEPENDENCY INJECTION
+
+-------------------------------------------------------------------------------------------------
+The Spring has something called the Spring Context
+
+The Spring Context is started when Spring starts
+
+The Spring Context is a place where all of the objects that are needed in our project are needed
+
+All of these objects are created in the Spring Context
+
+and when we need an instance of an object spring will INJECT an instance where necessary
+
+Spring has all of the rules for a CRUD repo
+
+it constructs these objects in the spring context
+
+when we use the @Autowired annotation it's used as a 'marker'
+of where to INJECT that instance into the respective class
+
+A dependency is a reliance
+
+We would need to create a project repo instance
+
+We'd have to create an annonymous class and the method signatures and such and extend CRUDRepo
+but instead we outsource that responsibility to Spring. 
+
+"Why don't you give me that CRUDRepo instance"
+
+
+-------------------------------------------------------------------------------------------------
+
+		COMPONENT SCANNING @Service, @Component, and @Repository Injection
+
+-------------------------------------------------------------------------------------------------
+
+
+Use the @Bean to say that a constructor is what we want to use to construct an instance
+then @Configuration on the class allows the Spring Context to load an instance into memorny upon startup
+
+@Service and @Component and @Repository also works instead of @Configuration
+They're all markers for good programming design
+
+@Compnent is catch all, you don't know if it's a repo or a service
+
+Component Scanning begins in com.mr.pma
+
+if we wanted another package to also be scanned:
+
+In ProjectManagementApplication we would have to add a parameter to the @SpringBootApplication
+@SpringBootApplication(scanBasePackages={"com.mr.pma", "com.mr.utils"})
+Note: you must add com.mr.pma, without the parameter is checks com.mr.pma by DEFAULT
+
+-------------------------------------------------------------------------------------------------
+
+		CONSTRUCTOR INJECTION, FIELD INJECTION AND SETTER INJECTION
+
+-------------------------------------------------------------------------------------------------
+
+	-----------------------
+	Constructor Injection:
+	-----------------------
+	
+	Lets take an example from the EmployeeController class
+	
+		instead of doing:
+	
+		@Repository
+		EmployeeRepository empRepo;
+	
+		we can do
+	
+		EmployeeRepository empRepo;
+	
+		public EmployeeController(EmployeeRepository empRepo){
+			this.empRepo = empRepo;
+		}
+	
+	-----------------
+	Setter Injection:
+	-----------------
+	
+		EmployeeRepository empRepo;
+	
+		@Autowired
+		public void setEmpRepo(EmployeeRepository empRepo){
+			this.empRepo = empRepo;
+		}
+	
+	----------------------------------------
+	CHALLENGE: Complete the following Class:
+	----------------------------------------
+	package com.mr.pma.services;
+	public class EmployeeService {
+	
+	}
+	
+	
+	Solution:
+	---------
+	package com.mr.pma.services;
+	
+	import org.springframework.stereotype.Service;
+	
+	@Service
+	public class EmployeeService {
+	
+		// CONSTRUCTOR INJECTION
+		EmployeeRepository empRepo;
+		public EmployeeService(EmployeeRepository empRepo){
+			super();
+			this.empRepo = empRepo;
+		}
+		
+		// SETTER INJECTION
+		@Autowired
+		public void setEmpRepo(EmployeeRepository empRepo){
+			this.empRepo = empRepo;
+		}
+		
+		// FIELD INJECTION
+		@Autowired
+		EmployeeRepository empRepo;
+	
+	}
+
+-------------------------------------------------------------------------------------------------
+
+		@Primary and @Qualifier ANNOTATIONS
+
+-------------------------------------------------------------------------------------------------
+
+if we have 
+	IStaffRepositoryImpl1
+	IStaffRepositoryImpl2
+	with very similar implementation
+	
+	Spring will be confused with which instances of the classes to use
+	
+	One Solution:
+	use the @Primary on one of the services
+	Note you can't use @Primary on both services, this will give the same error
+	
+	Second Solution:
+	Use the @Qualifier("staffRepositoryImpl1")
+
+-------------------------------------------------------------------------------------------------
+
+		PROPERTY CONFIGURATIONS AND READING VALUES
+
+-------------------------------------------------------------------------------------------------
+
+	spring.h2.console.enabled=true
+	spring.h2.console.path=/h2-console
+	spring.jpa.show-sql=true
+	spring.thymeleaf.cache=false
+	#spring.jpa.hibernate.ddl-auto=none
+	
+	In a production server these configurations would be horrible!
+	We would normally remove a lot or all of these
+	
+	These configurations are for our development environment
+	
+	Defining Variables in the Property configurations file
+	-------------------------------------------------------
+	
+	version=0.1.0
+	
+	How do we use the version variable in the Java Code?
+	
+	Go to a Java Class, the HomeController for instance
+	
+	add:
+	@Value("${version}")
+	private String ver;
+	
+	@GetMapping...................
+	public String displayHome(Model model .........) throws ...............
+		model.addAttribute("versionNumber", ver); // this is how we can display the version number of our application on our homepage!
+	
+	
+-------------------------------------------------------------------------------------------------
+
+		READING ENVIRONMENT VARIABLES IN PROPERTY CONFIGURATION FILES
+
+-------------------------------------------------------------------------------------------------
+
+
+-------------------------------------------------------------------------------------------------
+
+		INSTALLING THE POSTGRESQL DATABASE AND DRIVER
+
+-------------------------------------------------------------------------------------------------
+
+
+-------------------------------------------------------------------------------------------------
+
+		CONFIGURE PROPERTIES FOR POSTGRE DATABASE
+
+-------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
